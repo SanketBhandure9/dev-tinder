@@ -18,3 +18,7 @@
 17. Order of the routes matter a lot
 18. Install postman app and create workspace and collection and make api call using postman
 19. Write logic to handle all apis calls (GET, POST, DELETE, etc.)
+20. Explore route and use if ?, \*, +, () in the routes
+21. Use of regex in routes
+22. Reading the query params in the routes
+23. Reading the dynamic routes
