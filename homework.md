@@ -22,3 +22,13 @@
 21. Use of regex in routes
 22. Reading the query params in the routes
 23. Reading the dynamic routes
+24. Multiple route handlers - Play with the code
+25. next()
+26. Next funciton and res.send() together
+27. app.use("/route", [r1, r2], r3)
+28. What is middleware? Why do we need it?
+29. How express JS actually handles the request behind the scenes
+30. Difference between app.use and app.all
+31. Write dummy auth middleware for admin
+32. Write dummy auth middleware for all user rputes except /user/login
+33. Error handling using app.use
