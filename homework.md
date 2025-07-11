@@ -9,3 +9,12 @@
 9. What are dependencies?
 10. What is use of "-g" while npm install
 11. Difference between caret and tilde (^ vs ~)
+
+12. Initialize git
+13. .gitignore
+14. Create a remote app on github
+15. Push all code to remote origin
+16. Play with routes and extensions e.g. /test
+17. Order of the routes matter a lot
+18. Install postman app and create workspace and collection and make api call using postman
+19. Write logic to handle all apis calls (GET, POST, DELETE, etc.)
