@@ -64,3 +64,6 @@
 60. Add timestamps to the schema
 61. API level validation on PATCH request and signup post api
 62. Data sanitization: Add API validationfor each field
+63. Install validator library
+64. Explore validator library functions and use validators funcs for password, email, etc.
+65. NEVER TRUST req.body

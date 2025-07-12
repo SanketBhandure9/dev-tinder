@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = mongoose.Schema(
   {
@@ -17,10 +18,22 @@ const userSchema = mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      validate(val) {
+        if (!validator.isEmail(val)) {
+          throw new Error("Invalid email address: " + val);
+        }
+      },
     },
     password: {
       type: String,
       required: true,
+      validate(val) {
+        if (!validator.isStrongPassword(val)) {
+          throw new Error(
+            "Password is  not strong, enter strong a password: " + val
+          );
+        }
+      },
     },
     age: {
       type: Number,
@@ -38,6 +51,11 @@ const userSchema = mongoose.Schema(
       type: String,
       default:
         "https://tamilnaducouncil.ac.in/wp-content/uploads/2020/04/dummy-avatar.jpg",
+      validate(val) {
+        if (!validator.isURL(val)) {
+          throw new Error("Invalid photo url: " + val);
+        }
+      },
     },
     about: {
       type: String,
