@@ -40,3 +40,8 @@
 38. Create a userSchema and UserModel
 39. Create POST /signup api and add data to database
 40. Push some documents usins API calls from postman
+41. Error handling using try, catch
+
+42. Javascript object vs JSON
+43. Add express json middleware to your app
+44. Make your signup api dynamic from postman or client
