@@ -2,17 +2,31 @@ const express = require("express");
 const { connectDB } = require("./config/database");
 const app = express();
 const { UserModel } = require("./models/user");
+const { validateSignUpData } = require("./utils/validation");
+const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  const user = new UserModel(req.body);
-
   try {
+    // validation of data
+    validateSignUpData(user);
+
+    // encryption of data
+    const { firstName, lastName, emailId, password } = req.body;
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const user = new UserModel({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+    });
+
     await user.save();
     res.send("User Added successfully...");
   } catch (err) {
-    res.status(400).send("Error while saving the user: " + err.message);
+    res.status(400).send("ERROR: " + err.message);
   }
 });
 
@@ -61,7 +75,13 @@ app.patch("/user/:userId", async (req, res) => {
   const data = req.body;
 
   try {
-    const ALLOWED_UPDATES = ["photoUrl", "about", "skills"];
+    const ALLOWED_UPDATES = [
+      "firstName",
+      "emailId",
+      "photoUrl",
+      "about",
+      "skills",
+    ];
 
     const isUpdateAllowed = Object.keys(data).every((key) =>
       ALLOWED_UPDATES.includes(key)

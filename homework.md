@@ -67,3 +67,7 @@
 63. Install validator library
 64. Explore validator library functions and use validators funcs for password, email, etc.
 65. NEVER TRUST req.body
+
+66. Validate data in signup API
+67. Install bcrypt package
+68. Create passwordHash using bcrypt.hash and store in database
