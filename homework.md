@@ -55,3 +55,10 @@
 52. Explore mongoose documentation for models
 53. What are options in a Model.findOneAndUpdate method
 54. Update the user with emailId
+
+55. Schema type options
+56. Add require, trim, minlength, maxlength, default, unique, lowercase
+57. Add default
+58. Create a custom validate function for gender
+59. Improve the DB schema - PUT all appropriate validations on each field in schema
+60. Add timestamps to the schema
