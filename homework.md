@@ -45,3 +45,7 @@
 42. Javascript object vs JSON
 43. Add express json middleware to your app
 44. Make your signup api dynamic from postman or client
+45. When using findOne for duplicates, which will it returns latest one or oldest one
+46. API - Get user by email
+47. API - feed api to get all users
+48. Create API - get user by id
