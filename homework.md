@@ -49,3 +49,9 @@
 46. API - Get user by email
 47. API - feed api to get all users
 48. Create API - get user by id
+49. Create API to delete user
+50. Difference between PATCH and PUT
+51. API - update user
+52. Explore mongoose documentation for models
+53. What are options in a Model.findOneAndUpdate method
+54. Update the user with emailId

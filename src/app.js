@@ -42,6 +42,31 @@ app.get("/feed", async (req, res) => {
   }
 });
 
+// Delete user from database
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+
+  try {
+    // const user = await UserModel.findByIdAndDelete({ _id: userId });
+    const user = await UserModel.findByIdAndDelete(userId);
+    res.send("User deleted successfully...");
+  } catch (err) {
+    res.status(400).send("Error while deleting the user: " + err.message);
+  }
+});
+
+// Update user from database
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body;
+  try {
+    await UserModel.findByIdAndUpdate(userId, data);
+    res.send("User updated successfully...");
+  } catch (err) {
+    res.status(400).send("Error while updating the user: " + err.message);
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("Database connection success...");
