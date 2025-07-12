@@ -71,3 +71,5 @@
 66. Validate data in signup API
 67. Install bcrypt package
 68. Create passwordHash using bcrypt.hash and store in database
+69. Create login API
+70. Compare password and throw error if email or passowrd is not correct
