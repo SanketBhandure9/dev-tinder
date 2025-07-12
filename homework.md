@@ -32,3 +32,11 @@
 31. Write dummy auth middleware for admin
 32. Write dummy auth middleware for all user rputes except /user/login
 33. Error handling using app.use
+
+34. Create a free cluster MongoD official website
+35. Install mongoose library
+36. Connect your application to database "connection-url"/devTinder
+37. Call the connectDB function and connect to database before starting application on 3000
+38. Create a userSchema and UserModel
+39. Create POST /signup api and add data to database
+40. Push some documents usins API calls from postman
