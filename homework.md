@@ -73,3 +73,10 @@
 68. Create passwordHash using bcrypt.hash and store in database
 69. Create login API
 70. Compare password and throw error if email or passowrd is not correct
+
+71. Install cookie-parser
+72. Send dummy cookie to user
+73. Create GET /profile API and check if you get the cookie back
+74. Install jsonwebtoken
+75. In /login API, after email and password validation, create a JWT token and send it to user in cookie
+76. Read the cookies inside your profile API and find who is logged in user
