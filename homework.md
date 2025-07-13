@@ -80,3 +80,6 @@
 74. Install jsonwebtoken
 75. In /login API, after email and password validation, create a JWT token and send it to user in cookie
 76. Read the cookies inside your profile API and find who is logged in user
+77. Write userAuth middleware
+78. Add userAuth to profile API and send new sendConnectionRequest API
+79. Set the expiry of JWT token and cookies for 7 days
