@@ -97,3 +97,14 @@
 90. Create PATCH /profile/view, /profile/edit and test it
 91. Create PATCH /profile/password = >Forget password API
 92. Make you validate all data in every POST, PATCH APIs
+
+93. Create connection request schema
+94. Send connection request API
+95. Proper validation of data
+96. Think about all corner cases
+97. $or and $and in mongoose
+98. Schema.pre()
+99. Read more about indexes in mongoDB
+100. Why do we need index in DB?
+101. What is advanctage and disadvantage of creating index?
+102. Read article about mongoDB/mongoose compound indexing
