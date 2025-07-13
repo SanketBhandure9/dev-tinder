@@ -85,3 +85,11 @@
 79. Set the expiry of JWT token and cookies for 7 days
 80. Create userSchema method to getSJWT
 81. Create userSchema method to comparePassword
+
+82. Explore tinder APIs
+83. Create a list of all APIs you can think of devTinder
+84. Group multiple routes
+85. Read documentation for express.router
+86. Create routes folder for managing routes
+87. Creta router authRouter, profileRouter, requestRouter
+88. Import these routers in app.js
