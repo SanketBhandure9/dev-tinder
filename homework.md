@@ -93,3 +93,7 @@
 86. Create routes folder for managing routes
 87. Creta router authRouter, profileRouter, requestRouter
 88. Import these routers in app.js
+89. Create POST /logout API
+90. Create PATCH /profile/view, /profile/edit and test it
+91. Create PATCH /profile/password = >Forget password API
+92. Make you validate all data in every POST, PATCH APIs
