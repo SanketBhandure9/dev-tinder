@@ -114,3 +114,6 @@
 105. Read about ref and populate
 106. Create GET /user/requests/received
 107. Create GET /user/connections
+
+108. Create GET /user/feed API
+109. Explore the $nin, $ne and other query operators
