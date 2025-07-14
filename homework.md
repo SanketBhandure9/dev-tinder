@@ -113,3 +113,4 @@
 104. Thought process: POST vs GET
 105. Read about ref and populate
 106. Create GET /user/requests/received
+107. Create GET /user/connections
