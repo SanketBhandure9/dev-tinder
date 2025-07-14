@@ -110,3 +110,6 @@
 102. Read article about mongoDB/mongoose compound indexing
 
 103. Write code with proper validation for POST /reuqest/review/:status/:requestId
+104. Thought process: POST vs GET
+105. Read about ref and populate
+106. Create GET /user/requests/received
