@@ -4,7 +4,7 @@ const { userAuth } = require("../middleware/auth");
 const { ConnectionRequestModel } = require("../models/connectionRequest");
 const { UserModel } = require("../models/user");
 
-const USER_SAFE_DATA = "firstName lastName age gender about skills";
+const USER_SAFE_DATA = "firstName lastName age gender photoUrl about skills";
 
 // Get all the pending connection request for the loggedIn user
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
@@ -77,8 +77,6 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
       hideUsersFromFeed.add(req.toUserId.toString());
     });
 
-    console.log("connectionRequests", connectionRequests);
-
     const users = await UserModel.find({
       $and: [
         { _id: { $nin: Array.from(hideUsersFromFeed) } },
@@ -89,7 +87,7 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    res.josn({ data: users });
+    res.json({ data: users });
   } catch (err) {
     res.status(400).send("ERROR: " + err.message);
   }
