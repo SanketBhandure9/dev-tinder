@@ -3,8 +3,19 @@ const userRouter = express.Router();
 const { userAuth } = require("../middleware/auth");
 const { ConnectionRequestModel } = require("../models/connectionRequest");
 const { UserModel } = require("../models/user");
+const mongoose = require("mongoose");
 
-const USER_SAFE_DATA = "firstName lastName age gender photoUrl about skills";
+// const USER_SAFE_DATA = "firstName lastName age gender photoUrl about skills";
+const USER_SAFE_DATA = {
+  _id: 1,
+  firstName: 1,
+  lastName: 1,
+  age: 1,
+  gender: 1,
+  about: 1,
+  skills: 1,
+  photoUrl: 1,
+};
 
 // Get all the pending connection request for the loggedIn user
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
@@ -17,10 +28,10 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
     }).populate("fromUserId", USER_SAFE_DATA);
     // }).populate("fromUserId", ["firstName", "lastName"]);
 
-    if (!connectionRequests) {
+    if (!connectionRequests || connectionRequests.length === 0) {
       return res
         .status(404)
-        .json({ message: "No connection requets found :(" });
+        .json({ message: "No connection requests found :(" });
     }
 
     res.json({
@@ -63,32 +74,61 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
     const loggedInUser = req.user;
 
     const page = parseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.limit) || 2;
+    let limit = parseInt(req.query.limit) || 10;
     limit = limit > 50 ? 50 : limit;
     const skip = (page - 1) * limit;
 
+    // Step 1: Get list of all users connected/requested with logged-in user
     const connectionRequests = await ConnectionRequestModel.find({
       $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
     }).select("fromUserId toUserId");
 
-    const hideUsersFromFeed = new Set();
+    // Step 2: Create a Set of user IDs to exclude from feed
+    const excludedUserIds = new Set();
     connectionRequests.forEach((req) => {
-      hideUsersFromFeed.add(req.fromUserId.toString());
-      hideUsersFromFeed.add(req.toUserId.toString());
+      excludedUserIds.add(req.fromUserId.toString());
+      excludedUserIds.add(req.toUserId.toString());
+    });
+    excludedUserIds.add(loggedInUser._id.toString()); // Exclude self
+
+    const excludeIds = Array.from(excludedUserIds).map(
+      (id) => new mongoose.Types.ObjectId(id)
+    );
+
+    // Step 3: Use aggregation to apply filtering and pagination
+    const pipeline = [
+      {
+        $match: {
+          _id: { $nin: excludeIds },
+        },
+      },
+      {
+        $project: USER_SAFE_DATA, // Make sure USER_SAFE_DATA is a valid projection object
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+    ];
+
+    const users = await UserModel.aggregate(pipeline);
+
+    // Step 4: Get total count (for pagination)
+    const total = await UserModel.countDocuments({
+      _id: { $nin: excludeIds },
     });
 
-    const users = await UserModel.find({
-      $and: [
-        { _id: { $nin: Array.from(hideUsersFromFeed) } },
-        { _id: { $ne: loggedInUser._id } },
-      ],
-    })
-      .select(USER_SAFE_DATA)
-      .skip(skip)
-      .limit(limit);
-
-    res.json({ data: users });
+    res.json({
+      data: users,
+      page,
+      limit,
+      total,
+      hasMore: skip + users.length < total,
+    });
   } catch (err) {
+    console.error("Feed Error:", err);
     res.status(400).send("ERROR: " + err.message);
   }
 });

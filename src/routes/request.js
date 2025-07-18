@@ -29,17 +29,18 @@ requestRouter.post(
       }
 
       // if there is an existing connectionRequest
-      const existingConnectionRequest = await ConnectionRequestModel.findOne({
-        $or: [
-          { fromUserId, toUserId },
-          { fromUserId: toUserId, toUserId: fromUserId },
-        ],
+      let existingConnectionRequest = await ConnectionRequestModel.findOne({
+        fromUserId,
+        toUserId,
       });
 
       if (existingConnectionRequest) {
-        return res
-          .status(400)
-          .send({ message: "Connection request already exits!" });
+        existingConnectionRequest.status = status;
+        const data = await existingConnectionRequest.save();
+        return res.json({
+          message: `Connection request updated to ${status}!`,
+          data,
+        });
       }
 
       const connectionRequest = new ConnectionRequestModel({
