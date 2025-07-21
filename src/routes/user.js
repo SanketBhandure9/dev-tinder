@@ -133,4 +133,42 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
   }
 });
 
+// DELETE /user/connection/:userId - Remove a connection
+userRouter.delete(
+  "/user/connection/remove/:userId",
+  userAuth,
+  async (req, res) => {
+    try {
+      const loggedInUserId = req.user._id;
+      const otherUserId = req.params.userId;
+
+      // Find and delete the accepted connection request between the two users
+      const deleted = await ConnectionRequestModel.findOneAndDelete({
+        $or: [
+          {
+            fromUserId: loggedInUserId,
+            toUserId: otherUserId,
+            status: "accepted",
+          },
+          {
+            fromUserId: otherUserId,
+            toUserId: loggedInUserId,
+            status: "accepted",
+          },
+        ],
+      });
+
+      if (!deleted) {
+        return res
+          .status(404)
+          .json({ message: "Connection not found or not accepted." });
+      }
+
+      res.json({ message: "Connection deleted successfully." });
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  }
+);
+
 module.exports = userRouter;
