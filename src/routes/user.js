@@ -28,14 +28,8 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
     }).populate("fromUserId", USER_SAFE_DATA);
     // }).populate("fromUserId", ["firstName", "lastName"]);
 
-    if (!connectionRequests || connectionRequests.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No connection requests found :(" });
-    }
-
     res.json({
-      message: "Data fetched successfully",
+      message: connectionRequests.length === 0 ? "No connection requests found :(" : "Data fetched successfully",
       data: connectionRequests,
     });
   } catch (err) {
@@ -56,12 +50,18 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       .populate("fromUserId", USER_SAFE_DATA)
       .populate("toUserId", USER_SAFE_DATA);
 
-    const modifiedData = connectionRequests.map((row) => {
-      if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
-        return row.toUserId;
-      }
-      return row.fromUserId;
-    });
+    // Filter out nulls and always return 200 with array
+    const modifiedData = connectionRequests
+      .map((row) => {
+        if (row.fromUserId && row.toUserId) {
+          if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
+            return row.toUserId;
+          }
+          return row.fromUserId;
+        }
+        return null;
+      })
+      .filter((user) => user !== null);
 
     res.json({ data: modifiedData });
   } catch (err) {

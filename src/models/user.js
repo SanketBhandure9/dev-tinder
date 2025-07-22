@@ -57,11 +57,6 @@ const userSchema = mongoose.Schema(
       type: String,
       default:
         "https://tamilnaducouncil.ac.in/wp-content/uploads/2020/04/dummy-avatar.jpg",
-      validate(val) {
-        if (!validator.isURL(val)) {
-          throw new Error("Invalid photo url: " + val);
-        }
-      },
     },
     about: {
       type: String,
