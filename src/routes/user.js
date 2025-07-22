@@ -104,28 +104,13 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
       },
       {
         $project: USER_SAFE_DATA, // Make sure USER_SAFE_DATA is a valid projection object
-      },
-      {
-        $skip: skip,
-      },
-      {
-        $limit: limit,
-      },
+      }
     ];
 
     const users = await UserModel.aggregate(pipeline);
 
-    // Step 4: Get total count (for pagination)
-    const total = await UserModel.countDocuments({
-      _id: { $nin: excludeIds },
-    });
-
     res.json({
-      data: users,
-      page,
-      limit,
-      total,
-      hasMore: skip + users.length < total,
+      data: users
     });
   } catch (err) {
     console.error("Feed Error:", err);
