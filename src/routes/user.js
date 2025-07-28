@@ -78,18 +78,20 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
     limit = limit > 50 ? 50 : limit;
     const skip = (page - 1) * limit;
 
-    // Step 1: Get list of all users connected/requested with logged-in user
-    const connectionRequests = await ConnectionRequestModel.find({
+    // Step 1: Get users to exclude based on active connections and pending requests
+    const activeConnectionRequests = await ConnectionRequestModel.find({
       $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+      status: { $in: ["interested", "ignored", "accepted"] } // Only exclude active/pending requests
     }).select("fromUserId toUserId");
 
     // Step 2: Create a Set of user IDs to exclude from feed
     const excludedUserIds = new Set();
-    connectionRequests.forEach((req) => {
+    excludedUserIds.add(loggedInUser._id.toString()); // Always exclude self
+    
+    activeConnectionRequests.forEach((req) => {
       excludedUserIds.add(req.fromUserId.toString());
       excludedUserIds.add(req.toUserId.toString());
     });
-    excludedUserIds.add(loggedInUser._id.toString()); // Exclude self
 
     const excludeIds = Array.from(excludedUserIds).map(
       (id) => new mongoose.Types.ObjectId(id)
@@ -103,14 +105,26 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
         },
       },
       {
-        $project: USER_SAFE_DATA, // Make sure USER_SAFE_DATA is a valid projection object
+        $project: USER_SAFE_DATA,
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
       }
     ];
 
     const users = await UserModel.aggregate(pipeline);
 
     res.json({
-      data: users
+      message: users.length === 0 ? "No more users to show" : "Feed fetched successfully",
+      data: users,
+      pagination: {
+        page,
+        limit,
+        total: users.length
+      }
     });
   } catch (err) {
     console.error("Feed Error:", err);
