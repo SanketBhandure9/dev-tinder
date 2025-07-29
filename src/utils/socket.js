@@ -22,53 +22,53 @@ const initialiseSocket = (server) => {
 
     socket.on(
       "sendMessage",
-      async ({ firstName, lastName, userId, targetUserId, text }) => {
+      async ({ firstName, lastName, senderId, targetUserId, text }) => {
         // save message to database logic here
         try {
-          const roomId = [userId, targetUserId].sort().join("-");
-
           const connection = await ConnectionRequestModel.findOne({
             $or: [
-              {
-                fromUserId: userId,
-                toUserId: targetUserId,
-                status: "accepted",
-              },
-              {
-                fromUserId: targetUserId,
-                toUserId: userId,
-                status: "accepted",
-              },
+              { fromUserId: senderId, toUserId: targetUserId },
+              { fromUserId: targetUserId, toUserId: senderId },
             ],
+            status: "accepted",
           });
 
+          console.log(
+            "Saving message to database...",
+            connection,
+            senderId,
+            targetUserId,
+            text
+          );
           if (!connection) {
             throw new Error("No active connection found between users");
           }
 
           let chat = await ChatModel.findOne({
-            participants: { $all: [userId, targetUserId] },
+            participants: { $all: [senderId, targetUserId] },
           });
 
           if (!chat) {
             const newChat = new ChatModel({
-              participants: [userId, targetUserId],
+              participants: [senderId, targetUserId],
               messages: [],
             });
             chat = newChat;
           }
 
-          chat.messages.push({ senderId: userId, text });
+          chat.messages.push({ sender: senderId, text });
 
           await chat.save();
         } catch (error) {
           console.error("Error saving message:", error);
         }
 
+        const roomId = [senderId, targetUserId].sort().join("-");
+
         io.to(roomId).emit("messageReceived", {
           firstName,
           lastName,
-          userId,
+          senderId,
           text,
         });
       }
