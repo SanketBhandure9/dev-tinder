@@ -2,6 +2,7 @@ const express = require("express");
 const { userAuth } = require("../middleware/auth");
 const { ChatModel } = require("../models/chat");
 const mongoose = require("mongoose");
+const { UserModel } = require("../models/user");
 
 const chatRouter = express.Router();
 
@@ -20,6 +21,16 @@ chatRouter.get("/chat/:targetUserId", userAuth, async (req, res) => {
       return res.status(400).json({ error: "Cannot chat with yourself" });
     }
 
+    // Fetch target user details
+    const targetUser = await UserModel.findById(targetUserId).select(
+      "firstName lastName photoUrl"
+    );
+
+    if (!targetUser) {
+      return res.status(404).json({ error: "Target user not found" });
+    }
+
+    // Fetch or create chat
     let chat = await ChatModel.findOne({
       participants: { $all: [loggedInUser._id, targetUserId] },
     }).populate({
@@ -37,7 +48,15 @@ chatRouter.get("/chat/:targetUserId", userAuth, async (req, res) => {
 
     res.json({
       message: "Chat retrieved successfully",
-      data: chat,
+      data: {
+        messages: chat.messages || [],
+        targetUser: {
+          _id: targetUser._id,
+          firstName: targetUser.firstName,
+          lastName: targetUser.lastName,
+          photoUrl: targetUser.photoUrl,
+        },
+      },
     });
   } catch (err) {
     console.error("Error in chat route:", err);
